@@ -13,7 +13,7 @@ Date: 2025-08-11
 """
 
 import serial, time
-from WE310G4Test import send_at_command, receive_response
+from we310g4Test import send_at_command, receive_response
 
 def main():
     port = '/dev/tty.usbserial-FTL83DL1'  # Replace with your serial port
