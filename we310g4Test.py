@@ -73,7 +73,7 @@ def main():
                 print("Response:")
                 print(response)
 
-            # command = 'at+wncn=1,"iPhone 11 Pro CW","1abxpt45t21a"\r\n'
+            # command = 'at+wncn=1,"",""\r\n'
             # print(f"Command: {command.strip()}")
             # send_at_command(ser, command)
             # time.sleep(2)
