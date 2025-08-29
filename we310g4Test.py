@@ -28,7 +28,7 @@ def receive_response(ser, timeout=1):
     :return: Response from the device
     """
     ser.timeout = timeout
-    response = ser.read_all().decode('utf-8', errors='ignore')
+    response = ser.read_all().decode('utf-8')
     return response
 
 def receive_full_response(ser, poll_interval=0.1, max_idle=1):
@@ -53,7 +53,16 @@ def receive_full_response(ser, poll_interval=0.1, max_idle=1):
                 break
     return response.decode('utf-8', errors='ignore')
 
-def main():
+def we310g4_soft_reset(ser):
+    """
+    Function to reset the WE310G4 module using AT command.
+    :param ser: An open serial.Serial object
+    """
+    send_at_command(ser,'AT+YSR\r\n')
+    time.sleep(1)
+    response = receive_full_response(ser, 0.1, 2)
+
+if __name__ == "__main__":
     port = '/dev/tty.usbserial-FTL83DL1'  # Replace with your serial port
     baudrate = 115200
     initcommandList = [
@@ -113,6 +122,3 @@ def main():
         
     except serial.SerialException as e:
         print(f"Error: {e}")
-
-if __name__ == "__main__":
-    main()
