@@ -125,9 +125,8 @@ def main():
         lstResponse=strResponse.split(',')
         lstResponse=[item for item in lstResponse if item != ''] 
         #print(f'split at comma:{lstResponse}')        
-        thingspeakIP=lstResponse[1].split(':')[1]
+        thingspeakIP=lstResponse[1].split(':')[1].replace('"','')
         print(f'Thingspeak IP: {thingspeakIP}')
-
 
         # open TCP connection
         command='AT+SC=2,1,0\r\n'
@@ -137,6 +136,28 @@ def main():
         cid= parse_response_keyword(response, '+SC')
         print(f'CID: {cid}')
 
+        # connect to thingspeak socket
+        command=f'AT+SCO={cid},{thingspeakIP},80\r\n'
+        send_at_command(ser, command)
+        response = receive_response(ser)
+        print(response)
+
+        # enable auto-receive
+        command=f'AT+SRR={cid},1\r\n'
+        send_at_command(ser, command)
+        response = receive_full_response(ser,0.1, 0.5)
+        print(response)
+
+        # important: have \r\n twice at the end of the GET command
+        # and subtract 2 from length in AT+SN command
+        thingspeakCommand=f'GET /channels/{TSCHANNEL}/feeds.csv?api_key={TSAPIKEY}\r\n\r\n'
+        command=f'at+sn={cid},,,{len(thingspeakCommand)-2},'
+        send_at_command(ser, command)
+        time.sleep(0.02)
+        send_at_command(ser, thingspeakCommand)
+        response = receive_full_response(ser,0.1, 1)
+        print("Thingspeak Response:")
+        print(response)
 
 if __name__ == "__main__":
     main()
