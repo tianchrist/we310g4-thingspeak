@@ -8,6 +8,62 @@ Description:
 Usage:
     python we310g4-thingspeak-read.py
 
+Example output:
+AT
+INVALID COMMAND
+
+AT
+OK
+
+
+AT+WNI=0
+
+WIFI is not running
+Initializing WIFI ...
+WIFI initialized
++WNI:1
+
+OK
+
++WNI:1
+WNI handle: 1
+Attempting to connect to Wi-Fi, attempts left: 3
+Wi-Fi is up!
+AT+NDNSCRURL="api.thingspeak.com"
+
++NDNSCRURL:"98.80.23.46"
+
+OK
+
+Resolving Thingspeak IP...
+Thingspeak IP: 98.80.23.46
+CID: 0
+AT+SCO=0,98.80.23.46,80
+
+
+OK
+AT+SRR=0,1
+
+OK
+
+Thingspeak Response:
+at+sn=0,,,58,
+OK
+
+
++SR:0,98.80.23.46,80,309,309,created_at,entry_id,field1,field2
+2023-07-02 10:00:43 UTC,1,122,234
+2023-07-02 10:02:39 UTC,2,10,12
+2023-07-02 10:06:30 UTC,3,11.2,13.4
+2025-07-13 17:24:59 UTC,4,93.9,
+2025-07-13 17:30:36 UTC,5,93.8,
+2025-07-13 17:31:27 UTC,6,'string',
+
+
++SCL:0
+
+--- End of output ---
+
 Author: tianchrist
 Date: 2025-08-11
 """
@@ -114,6 +170,7 @@ def main():
             print('Failed to connect to Wi-Fi.')
             return             
 
+        # resolve thingspeak IP address
         command='AT+NDNSCRURL="api.thingspeak.com"\r\n'
         send_at_command(ser, command)
         response = receive_full_response(ser, 0.1, 1)
